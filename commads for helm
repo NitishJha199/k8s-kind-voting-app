@@ -1,0 +1,35 @@
+# Commands for installing helm and exposing the services #
+ mkdir helm
+ cd helm/
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+helm version
+kubectl create namespace monitoring
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install prometheus-stack prometheus-community/kube-prometheus-stack --namespace monitoring --set prometheus.service.NodePort=30000 --set grafana.service.NodePort=31000 --set prometheus.service.type=NodePort --set grafana.service.type=NodePort
+kubectl --namespace monitoring get pods -l "release=prometheus-stack"
+kubectl get pods -n monitoring
+kubectl get svc -n monitoring
+kubectl port-forward svc/prometheus-stack-grafana  3000:80 -n monitoring --address=0.0.0.0 &
+kubectl port-forward svc/prometheus-stack-grafana  3000:80 -n monitoring --address=0.0.0.0 &
+kubectl get secret prometheus-stack-grafana -n monitoring -o jsonpath="{.data.admin-password}"
+kubectl get secret prometheus-stack-grafana -n monitoring -o jsonpath="{.data.admin-password}" | base64 --decode
+cd ..
+ls
+mkdir voting-app
+ cd voting-app/
+git clone https://github.com/NitishJha199/k8s-kind-voting-app.git
+ls
+cd k8s-kind-voting-app/
+ls
+ cd k8s-specifications/
+ ls
+ kubectl apply -f .
+ kubectl get pods
+ kubect get svc
+ kubectl get svc
+ kubectl port-forward svc/vote port 5000:5000 --address=0.0.0.0 &
+ kubectl port-forward svc/vote 5000:5000 --address=0.0.0.0 &
+ kubectl port-forward svc/result 5001:5001 --address=0.0.0.0 &
